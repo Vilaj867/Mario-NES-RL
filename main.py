@@ -17,22 +17,26 @@ env = JoypadSpace(env, [['right'],['right', 'B'],['right', 'A', 'B']]) # limits 
 
 done = True # if mario dies or completes level
 
-# simulate running game for 5000 time steps
-for step in range(5000):
-    if done: 
-        state = env.reset() # reset env to start of level
+NUM_EPISODES = 1 # number of episodes to simulate
+for episode in range(1, NUM_EPISODES+1): 
+    state = env.reset() # reset env to start of level
+    done = False
+    total_reward = 0
 
-    # action of agent (insert policy here)
-    action = env.action_space.sample()
+    while not done: # play episode until finished
+        # action of agent (insert policy here)
+        action = env.action_space.sample()
 
-    # run one time step of the env using the agent action
-    state, reward, done, info = env.step(action)
+        # run one time step of the env using the agent action
+        new_state, reward, done, info = env.step(action)
+        total_reward += reward
+        env.render() # render environment time step
+    print(f"Episode #{episode} || Total reward: {total_reward}")
 
-    env.render() # render environment time step
-
-# For testing purposes
 print(f"\n\n{state.shape},\n {reward},\n {done},\n {info}") # print info
-env = GrayScaleObservation(env, keep_dim=True) # apply gray scale wrapper to environment to reduce info
-state, reward, done, info = env.step(action=0)
-print(f"\n\n{state.shape}")
+
 env.close()
+
+# Resize obsvervation wrapper
+# Frame stack wrapper
+# GrayScale wrapper
